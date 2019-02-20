@@ -4,8 +4,8 @@ const renderFilterItem = function (id, name, count = 0, isChecked = false) {
   const element = document.createElement(`template`);
 
   let isDisabled = ``;
-  if (count == 0) {
-    isDisabled = `disabled`
+  if (count === `0`) {
+    isDisabled = `disabled`;
   }
 
   const template = `<input
@@ -13,17 +13,17 @@ const renderFilterItem = function (id, name, count = 0, isChecked = false) {
     id="${id}"
     class="filter__input visually-hidden"
     name="filter"
-    ${isChecked ? "checked" : ""} ${isDisabled}
+    ${isChecked ? `checked` : ``} ${isDisabled}
   >
   <label for="${id}" class="filter__label">
     ${name} <span class="filter__overdue-count">${count}</span>
-  </label>`
+  </label>`;
 
   const mainFilter = document.querySelector(`.main__filter`);
 
   element.innerHTML = template;
   mainFilter.appendChild(element.content);
-}
+};
 
 renderFilterItem(`filter__all`, `ALL`, `15`, true);
 renderFilterItem(`filter__overdue`, `OVERDUE`, `0`);
@@ -259,22 +259,22 @@ const cardTemplate = `<form class="card__form" method="get">
       <button class="card__delete" type="button">delete</button>
     </div>
   </div>
-</form>`
+</form>`;
 
 const getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-const customClasses = ['card--edit', 'card--repeat', 'card--deadline', 'card--edit'];
-const colors = [`black`, `pink`, `yellow`, `blue`]
+const customClasses = [`card--edit`, `card--repeat`, `card--deadline`, `card--edit`];
+const colors = [`black`, `pink`, `yellow`, `blue`];
 const board = document.querySelector(`.board__tasks`);
 
 const renderCard = function (count) {
   const fragment = document.createDocumentFragment();
 
   for (let i = 0; i < count; i++) {
-    const element = document.createElement('article');
-    element.classList.add('card');
+    const element = document.createElement(`article`);
+    element.classList.add(`card`);
 
     const customClass = customClasses[getRandomInt(0, customClasses.length)];
     const color = colors[getRandomInt(0, colors.length)];
@@ -287,15 +287,15 @@ const renderCard = function (count) {
   }
 
   board.appendChild(fragment);
-}
+};
 
 renderCard(7);
 
-const c = document.querySelectorAll('.filter__label');
-c.forEach( function (el) {
-  el.addEventListener('click', function () {
-    board.innerHTML = '';
+const filterItems = document.querySelectorAll(`.filter__label`);
+filterItems.forEach(function (el) {
+  el.addEventListener(`click`, function () {
+    board.innerHTML = ``;
     renderCard(getRandomInt(3, 10));
-  })
-})
+  });
+});
 
