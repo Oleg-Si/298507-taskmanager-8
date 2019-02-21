@@ -1,6 +1,6 @@
 'use strict';
 
-const renderFilterItem = function (id, name, count = 0, isChecked = false) {
+const renderFilterItem = (id, name, count = 0, isChecked = false) => {
   const element = document.createElement(`template`);
 
   let isDisabled = ``;
@@ -261,15 +261,14 @@ const cardTemplate = `<form class="card__form" method="get">
   </div>
 </form>`;
 
-const getRandomInt = function (min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-};
+const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min)) + min;
+
 
 const customClasses = [`card--edit`, `card--repeat`, `card--deadline`, `card--edit`];
 const colors = [`black`, `pink`, `yellow`, `blue`];
 const board = document.querySelector(`.board__tasks`);
 
-const renderCard = function (count) {
+const renderCard = (count) => {
   const fragment = document.createDocumentFragment();
 
   for (let i = 0; i < count; i++) {
@@ -292,7 +291,7 @@ const renderCard = function (count) {
 renderCard(7);
 
 const filterItems = document.querySelectorAll(`.filter__label`);
-filterItems.forEach(function (el) {
+filterItems.forEach((el) => {
   el.addEventListener(`click`, function () {
     board.innerHTML = ``;
     renderCard(getRandomInt(3, 10));
