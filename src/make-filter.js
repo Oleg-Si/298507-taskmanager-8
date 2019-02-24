@@ -19,5 +19,5 @@ export default (id, name, count = 0, isChecked = false) => {
 
   element.innerHTML = template;
 
-  return element.content
+  return element.content;
 };
