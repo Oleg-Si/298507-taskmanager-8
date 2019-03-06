@@ -1,7 +1,8 @@
 import makeFilter from '../src/make-filter.js';
 import getRandomInt from '../src/get-random-integer.js';
 import getTaskData from '../src/get-task-data.js';
-import getTask from '../src/get-task.js';
+import GetTask from '../src/task.js';
+import GetTaskEdit from '../src/task-edit.js';
 
 const mainFilter = document.querySelector(`.main__filter`);
 
@@ -13,35 +14,46 @@ mainFilter.appendChild(makeFilter(`filter__repeating`, `Repeating`, `2`));
 mainFilter.appendChild(makeFilter(`filter__tags`, `Tags`, `6`));
 mainFilter.appendChild(makeFilter(`filter__archive`, `ARCHIVE`, `115`));
 
-const board = document.querySelector(`.board__tasks`);
-
-const createTask = (count) => {
+const createTasks = (count) => {
   const allTask = [];
   for (let i = 0; i < count; i++) {
-    allTask.push(getTask(getTaskData()));
+    allTask.push(getTaskData());
   }
 
   return allTask;
 };
 
-const renderCards = (taskArr) => {
+const createAllTasksMarkdown = (tasks) => {
   const fragment = document.createDocumentFragment();
-  taskArr.forEach((el) => {
-    const element = document.createElement(`template`);
-    element.innerHTML = el;
-    fragment.appendChild(element.content);
-  });
+
+  for (const task of tasks) {
+    const taskComponent = new GetTask(task);
+    const editTaskComponent = new GetTaskEdit(task);
+
+    taskComponent.onEdit = () => {
+      editTaskComponent.render();
+      board.replaceChild(editTaskComponent.element, taskComponent.element);
+      taskComponent.unrender();
+    };
+    editTaskComponent.onSubmit = () => {
+      taskComponent.render();
+      board.replaceChild(taskComponent.element, editTaskComponent.element);
+      editTaskComponent.unrender();
+    };
+
+    fragment.appendChild(taskComponent.render());
+  }
 
   return fragment;
 };
 
-
-board.appendChild(renderCards(createTask(7)));
+const board = document.querySelector(`.board__tasks`);
+board.appendChild(createAllTasksMarkdown(createTasks(7)));
 
 const filterItems = document.querySelectorAll(`.filter__label`);
 filterItems.forEach((el) => {
   el.addEventListener(`click`, function () {
     board.innerHTML = ``;
-    board.appendChild(renderCards(createTask(getRandomInt(3, 10))));
+    board.appendChild(createAllTasksMarkdown(createTasks(getRandomInt(3, 10))));
   });
 });
