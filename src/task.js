@@ -1,9 +1,10 @@
 import getRandomInt from '../src/get-random-integer.js';
-import createElement from '../src/create-element.js';
+import Component from '../src/component.js';
 
-export default class {
+export default class Task extends Component {
 
   constructor(data) {
+    super();
     this._title = data.title;
     this._dueDate = data.dueDate;
     this._tags = data.tags;
@@ -11,11 +12,15 @@ export default class {
     this._repeatingDays = data.repeatingDays;
     this._color = [...data.color][getRandomInt(0, 5)];
 
-    this._element = null;
     this._onEdit = null;
+    this._onEditButtonClick = this._onEditButtonClick.bind(this);
   }
 
-  _getHashtags(count) {
+  _onEditButtonClick() {
+    this._onEdit();
+  }
+
+  _getHashtagsListMarkdown(count) {
     const hashtagsList = [];
     for (let i = 0; i < count; i++) {
       hashtagsList.push([...this._tags][getRandomInt(0, 5)]);
@@ -23,18 +28,14 @@ export default class {
     const hashtagsListMarkdown = hashtagsList.map((el) => `<span class="card__hashtag-inner">
       <input type="hidden" name="hashtag" value="repeat" class="card__hashtag-hidden-input">
       <button type="button" class="card__hashtag-name">
-      #${el}
+        #${el}
       </button>
       <button type="button" class="card__hashtag-delete">
-      delete
+        delete
       </button>
     </span>`).join(` `);
 
     return hashtagsListMarkdown;
-  }
-
-  get element() {
-    return this._element;
   }
 
   set onEdit(func) {
@@ -175,7 +176,7 @@ export default class {
             </div>
 
             <div class="card__hashtag">
-              <div class="card__hashtag-list">${this._getHashtags(getRandomInt(0, 4))}</div>
+              <div class="card__hashtag-list">${this._getHashtagsListMarkdown(getRandomInt(0, 4))}</div>
               <label>
                 <input
                 type="text"
@@ -271,16 +272,10 @@ export default class {
   }
 
   bind() {
-    this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onEdit.bind(this));
+    this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onEditButtonClick);
   }
 
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this._element = null;
+  unbind() {
+    this._element.querySelector(`.card__btn--edit`).removeEventListener(`click`, this._onEditButtonClick);
   }
 }
