@@ -1,9 +1,10 @@
 import getRandomInt from '../src/get-random-integer.js';
-import createElement from '../src/create-element.js';
+import Component from '../src/component.js';
 
-export default class {
+export default class TaskEdit extends Component {
 
   constructor(data) {
+    super();
     this._title = data.title;
     this._dueDate = data.dueDate;
     this._tags = data.tags;
@@ -11,26 +12,8 @@ export default class {
     this._repeatingDays = data.repeatingDays;
     this._color = [...data.color][getRandomInt(0, 5)];
 
-    this._element = null;
     this._onSubmit = null;
-  }
-
-  _getHashtags(count) {
-    const hashtagsList = [];
-    for (let i = 0; i < count; i++) {
-      hashtagsList.push([...this._tags][getRandomInt(0, 5)]);
-    }
-    const hashtagsListMarkdown = hashtagsList.map((el) => `<span class="card__hashtag-inner">
-    <input type="hidden" name="hashtag" value="repeat" class="card__hashtag-hidden-input">
-    <button type="button" class="card__hashtag-name">
-    #${el}
-    </button>
-    <button type="button" class="card__hashtag-delete">
-    delete
-    </button>
-    </span>`).join(` `);
-
-    return hashtagsListMarkdown;
+    this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
   }
 
   _onSubmitButtonClick(evt) {
@@ -38,14 +21,28 @@ export default class {
     this._onSubmit();
   }
 
+  _getHashtagsListMarkdown(count) {
+    const hashtagsList = [];
+    for (let i = 0; i < count; i++) {
+      hashtagsList.push([...this._tags][getRandomInt(0, 5)]);
+    }
+    const hashtagsListMarkdown = hashtagsList.map((el) => `<span class="card__hashtag-inner">
+      <input type="hidden" name="hashtag" value="repeat" class="card__hashtag-hidden-input">
+      <button type="button" class="card__hashtag-name">
+        #${el}
+      </button>
+      <button type="button" class="card__hashtag-delete">
+        delete
+      </button>
+    </span>`).join(` `);
+
+    return hashtagsListMarkdown;
+  }
+
   set onSubmit(func) {
     if (typeof func === `function`) {
       this._onSubmit = func;
     }
-  }
-
-  get element() {
-    return this._element;
   }
 
   get template() {
@@ -180,7 +177,7 @@ export default class {
     </div>
 
     <div class="card__hashtag">
-    <div class="card__hashtag-list">${this._getHashtags(getRandomInt(0, 4))}</div>
+    <div class="card__hashtag-list">${this._getHashtagsListMarkdown(getRandomInt(0, 4))}</div>
     <label>
     <input
     type="text"
@@ -277,16 +274,11 @@ export default class {
 
   bind() {
     this._element.querySelector(`.card__form`)
-      .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
+      .addEventListener(`submit`, this._onSubmitButtonClick);
   }
 
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this._element = null;
+  unbind() {
+    this._element.querySelector(`.card__form`)
+      .removeEventListener(`submit`, this._onSubmitButtonClick);
   }
 }
